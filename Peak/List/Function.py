@@ -27,7 +27,6 @@ import numpy, math
 #from pyms.Utils.Error import error
 from pyms.Peak.Class import Peak
 from pyms.Utils.Utils import is_str, is_list
-from pyms.Utils.Math import median
 from pyms.GCMS.Class import MassSpectrum
 
 # If psyco is installed, use it to speed up running time
@@ -193,3 +192,22 @@ def fill_peaks(data, peak_list, D, minutes=False):
         new_peak_list.append(Peak(bestrt, ms, minutes))
 
     return new_peak_list
+
+# added by DK. courtesy of 
+# http://stackoverflow.com/questions/22354094/pythonic-way-of-detecting-outliers-in-one-dimensional-observation-data
+def mad_based_outlier(data, thresh=3.5):
+    if len(data.shape) == 1:
+        data = data[:,None]
+    median = numpy.nanmedian(data, axis=0)
+    diff = numpy.nansum((data - median)**2, dtype=float, axis=-1)
+    diff = numpy.sqrt(diff)
+    med_abs_deviation = numpy.nanmedian(diff)
+
+    modified_z_score = 0.6745 * diff / med_abs_deviation
+
+    return modified_z_score > thresh
+    
+def percentile_based_outlier(data, threshold=95):
+    diff = (100 - threshold) / 2.0
+    minval, maxval = numpy.nanpercentile(data, [diff, 100 - diff])
+    return (data < minval) | (data > maxval)
