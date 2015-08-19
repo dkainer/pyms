@@ -1,6 +1,7 @@
 # pyms
-GC-MS analysis library
+GC-MS analysis library.
 This project is based off the Automatically exported package from code.google.com/p/pyms
+
 PyMS already does a pretty good job of processing GC-MS data. It currently finds peaks, deconvolutes peaks, integrates peaks and aligns peaks across multiple GC-MS runs. Howver it can be improved
 
 # Goal
